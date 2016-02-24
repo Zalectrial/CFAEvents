@@ -5,10 +5,12 @@ PODS:
   - MagicalRecord (2.3.2):
     - MagicalRecord/Core (= 2.3.2)
   - MagicalRecord/Core (2.3.2)
+  - OAStackView (1.0.1)
 
 DEPENDENCIES:
   - GSShared/AutoLayout (from `https://github.com/Gridstone/Shared-iOS.git`)
   - MagicalRecord
+  - OAStackView
 
 EXTERNAL SOURCES:
   GSShared:
@@ -22,5 +24,6 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   GSShared: 0cfdc6676e622952ddac1993d17c0a34daf65eac
   MagicalRecord: 53bed74b4323b930992a725be713e53b37d19755
+  OAStackView: 95e7cb79cbea25c2342f496a44bdbe8bd4c8d510
 
 COCOAPODS: 0.39.0

@@ -14,6 +14,13 @@
 		08F535B31C7D191A005996C4 /* CFAEventsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535B21C7D191A005996C4 /* CFAEventsTests.m */; };
 		08F535BE1C7D191A005996C4 /* CFAEventsUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535BD1C7D191A005996C4 /* CFAEventsUITests.m */; };
 		08F535D11C7D1C2C005996C4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 08F535CF1C7D1C2C005996C4 /* Model.xcdatamodeld */; };
+		08F535D41C7D1EE3005996C4 /* CFAEventsIncidentTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535D31C7D1EE3005996C4 /* CFAEventsIncidentTableViewController.m */; };
+		08F535D71C7D1F16005996C4 /* CFAEventsIncidentDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535D61C7D1F16005996C4 /* CFAEventsIncidentDetailViewController.m */; };
+		08F535DC1C7D2386005996C4 /* Incident+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535D91C7D2386005996C4 /* Incident+CoreDataProperties.m */; };
+		08F535DD1C7D2386005996C4 /* Incident.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535DB1C7D2386005996C4 /* Incident.m */; };
+		08F535E01C7D281F005996C4 /* AppearanceUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535DF1C7D281F005996C4 /* AppearanceUtility.m */; };
+		08F535E31C7D638A005996C4 /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535E21C7D638A005996C4 /* LocationManager.m */; };
+		08F535E61C7D6398005996C4 /* NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535E51C7D6398005996C4 /* NetworkManager.m */; };
 		4E67D4A87117D5EC6672BFAF /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2559D8B6BB994B8E0EBD64DA /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +57,20 @@
 		08F535BF1C7D191A005996C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		08F535CB1C7D1A74005996C4 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		08F535D01C7D1C2C005996C4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		08F535D21C7D1EE3005996C4 /* CFAEventsIncidentTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFAEventsIncidentTableViewController.h; sourceTree = "<group>"; };
+		08F535D31C7D1EE3005996C4 /* CFAEventsIncidentTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFAEventsIncidentTableViewController.m; sourceTree = "<group>"; };
+		08F535D51C7D1F16005996C4 /* CFAEventsIncidentDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFAEventsIncidentDetailViewController.h; sourceTree = "<group>"; };
+		08F535D61C7D1F16005996C4 /* CFAEventsIncidentDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFAEventsIncidentDetailViewController.m; sourceTree = "<group>"; };
+		08F535D81C7D2386005996C4 /* Incident+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Incident+CoreDataProperties.h"; sourceTree = "<group>"; };
+		08F535D91C7D2386005996C4 /* Incident+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Incident+CoreDataProperties.m"; sourceTree = "<group>"; };
+		08F535DA1C7D2386005996C4 /* Incident.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Incident.h; sourceTree = "<group>"; };
+		08F535DB1C7D2386005996C4 /* Incident.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Incident.m; sourceTree = "<group>"; };
+		08F535DE1C7D281F005996C4 /* AppearanceUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppearanceUtility.h; sourceTree = "<group>"; };
+		08F535DF1C7D281F005996C4 /* AppearanceUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppearanceUtility.m; sourceTree = "<group>"; };
+		08F535E11C7D638A005996C4 /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
+		08F535E21C7D638A005996C4 /* LocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
+		08F535E41C7D6398005996C4 /* NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManager.h; sourceTree = "<group>"; };
+		08F535E51C7D6398005996C4 /* NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkManager.m; sourceTree = "<group>"; };
 		2559D8B6BB994B8E0EBD64DA /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E2AD567F054B05B39DA4885 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		E3FA8301E5425D75D424F692 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -149,6 +170,10 @@
 		08F535CC1C7D1ABD005996C4 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				08F535D21C7D1EE3005996C4 /* CFAEventsIncidentTableViewController.h */,
+				08F535D31C7D1EE3005996C4 /* CFAEventsIncidentTableViewController.m */,
+				08F535D51C7D1F16005996C4 /* CFAEventsIncidentDetailViewController.h */,
+				08F535D61C7D1F16005996C4 /* CFAEventsIncidentDetailViewController.m */,
 			);
 			name = Screens;
 			sourceTree = "<group>";
@@ -156,6 +181,12 @@
 		08F535CD1C7D1AC3005996C4 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				08F535DE1C7D281F005996C4 /* AppearanceUtility.h */,
+				08F535DF1C7D281F005996C4 /* AppearanceUtility.m */,
+				08F535E11C7D638A005996C4 /* LocationManager.h */,
+				08F535E21C7D638A005996C4 /* LocationManager.m */,
+				08F535E41C7D6398005996C4 /* NetworkManager.h */,
+				08F535E51C7D6398005996C4 /* NetworkManager.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -163,6 +194,10 @@
 		08F535CE1C7D1C1E005996C4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				08F535D81C7D2386005996C4 /* Incident+CoreDataProperties.h */,
+				08F535D91C7D2386005996C4 /* Incident+CoreDataProperties.m */,
+				08F535DA1C7D2386005996C4 /* Incident.h */,
+				08F535DB1C7D2386005996C4 /* Incident.m */,
 				08F535CF1C7D1C2C005996C4 /* Model.xcdatamodeld */,
 			);
 			name = Model;
@@ -370,8 +405,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08F535DD1C7D2386005996C4 /* Incident.m in Sources */,
 				08F535A31C7D191A005996C4 /* AppDelegate.m in Sources */,
+				08F535E01C7D281F005996C4 /* AppearanceUtility.m in Sources */,
+				08F535E31C7D638A005996C4 /* LocationManager.m in Sources */,
+				08F535D71C7D1F16005996C4 /* CFAEventsIncidentDetailViewController.m in Sources */,
+				08F535D41C7D1EE3005996C4 /* CFAEventsIncidentTableViewController.m in Sources */,
+				08F535DC1C7D2386005996C4 /* Incident+CoreDataProperties.m in Sources */,
 				08F535A01C7D191A005996C4 /* main.m in Sources */,
+				08F535E61C7D6398005996C4 /* NetworkManager.m in Sources */,
 				08F535D11C7D1C2C005996C4 /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

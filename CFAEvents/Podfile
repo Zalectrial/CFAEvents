@@ -2,4 +2,5 @@ platform :ios, "8.0"
 
 pod "MagicalRecord"
 pod 'GSShared/AutoLayout', :git => 'https://github.com/Gridstone/Shared-iOS.git'
+pod "OAStackView"
 
