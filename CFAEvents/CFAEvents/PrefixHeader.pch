@@ -17,5 +17,6 @@
 #import <UIKit/UIKit.h>
 #import "LocationManager.h"
 #import "NSError+Extended.h"
+#import "NetworkManager.h"
 
 #endif /* PrefixHeader_pch */

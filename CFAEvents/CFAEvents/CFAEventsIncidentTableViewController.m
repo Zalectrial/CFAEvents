@@ -68,7 +68,7 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
 - (void)refreshIncidentList
 {
-
+    
 }
 
 # pragma mark - Error Handling

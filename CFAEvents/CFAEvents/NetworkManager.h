@@ -10,4 +10,7 @@
 
 @interface NetworkManager : NSObject
 
++ (instancetype)sharedManager;
+- (void)getCFAEventsWithCompletionHandler:(void (^)(NSDictionary *incidents, NSError *error))completionHandler;
+
 @end

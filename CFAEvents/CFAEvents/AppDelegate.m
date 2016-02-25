@@ -29,7 +29,26 @@
     [MagicalRecord setupCoreDataStack];
     [LocationManager sharedManager];
     
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    
     return YES;
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    [[NetworkManager sharedManager] getCFAEventsWithCompletionHandler:^(NSDictionary *incidents, NSError *error)
+    {
+        if (error)
+        {
+            completionHandler(UIBackgroundFetchResultFailed);
+        }
+        else if (!incidents)
+        {
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
+        else
+            completionHandler(UIBackgroundFetchResultNewData);
+    }];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
