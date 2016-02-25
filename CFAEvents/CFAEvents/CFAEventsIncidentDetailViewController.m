@@ -207,6 +207,8 @@
 
 - (void)setupNavigation
 {
+    [AppearanceUtility setupNavigationBar];
+    
     //Segmented View
     self.detailSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"Detail", @"Map"]];
     self.detailSegmentedControl.tintColor = [UIColor whiteColor];

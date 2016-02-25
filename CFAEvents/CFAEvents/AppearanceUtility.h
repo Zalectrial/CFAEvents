@@ -10,6 +10,8 @@
 
 @interface AppearanceUtility : NSObject
 
++ (void)setupNavigationBar;
+
 @end
 
 @interface UIColor (AppearanceUtility)

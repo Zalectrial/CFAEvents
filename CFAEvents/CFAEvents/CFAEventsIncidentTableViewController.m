@@ -55,6 +55,8 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
 - (void)setupNavigationBar
 {
+    [AppearanceUtility setupNavigationBar];
+    
     UIBarButtonItem *refreshIncidentsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                                             target:self
                                                                                             action:@selector(refreshIncidentList)];
@@ -66,10 +68,25 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
 - (void)refreshIncidentList
 {
-    
+
 }
 
 # pragma mark - Error Handling
+
+- (void)createAlertControllerWithError:(NSError *)error
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:error.domain
+                                                                   message:error.localizedDescription
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *okayAction = [UIAlertAction actionWithTitle:@"Okay"
+                                                         style:UIAlertActionStyleCancel
+                                                       handler:nil];
+    
+    [alert addAction:okayAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
 
 # pragma mark - Table View
 

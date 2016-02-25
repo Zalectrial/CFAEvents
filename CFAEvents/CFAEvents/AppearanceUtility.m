@@ -10,6 +10,14 @@
 
 @implementation AppearanceUtility
 
++ (void)setupNavigationBar
+{
+    UINavigationBar *navBar = [UINavigationBar appearance];
+    navBar.translucent = NO;
+    navBar.barStyle = UIBarStyleBlack;
+    navBar.tintColor = [UIColor whiteColor];
+}
+
 @end
 
 @implementation UIColor (AppearanceUtility)

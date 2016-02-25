@@ -10,4 +10,8 @@
 
 @interface LocationManager : NSObject
 
++ (instancetype)sharedManager;
+- (CLLocation *)getCurrentLocation;
+- (void)getDistanceFromIncidentLocation:(CLLocationCoordinate2D)incidentLocation toCurrentLocationWithCompletionHandler:(void (^)(CGFloat distance, NSError *error))completionHandler;
+
 @end

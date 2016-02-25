@@ -24,10 +24,10 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    [MagicalRecord setupCoreDataStack];
-    
     [self setupRootViewController];
-    [self setupNavigationBar];
+    
+    [MagicalRecord setupCoreDataStack];
+    [LocationManager sharedManager];
     
     return YES;
 }
@@ -74,14 +74,6 @@
                                             ];
     
     self.window.rootViewController = splitViewController;
-}
-
-- (void)setupNavigationBar
-{
-    UINavigationBar *navBar = [UINavigationBar appearance];
-    navBar.translucent = NO;
-    navBar.barStyle = UIBarStyleBlack;
-    navBar.tintColor = [UIColor whiteColor];
 }
 
 @end

@@ -21,6 +21,7 @@
 		08F535E01C7D281F005996C4 /* AppearanceUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535DF1C7D281F005996C4 /* AppearanceUtility.m */; };
 		08F535E31C7D638A005996C4 /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535E21C7D638A005996C4 /* LocationManager.m */; };
 		08F535E61C7D6398005996C4 /* NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535E51C7D6398005996C4 /* NetworkManager.m */; };
+		08F535EC1C7E7E58005996C4 /* NSError+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535EB1C7E7E58005996C4 /* NSError+Extended.m */; };
 		4E67D4A87117D5EC6672BFAF /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2559D8B6BB994B8E0EBD64DA /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +72,8 @@
 		08F535E21C7D638A005996C4 /* LocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
 		08F535E41C7D6398005996C4 /* NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManager.h; sourceTree = "<group>"; };
 		08F535E51C7D6398005996C4 /* NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkManager.m; sourceTree = "<group>"; };
+		08F535EA1C7E7E58005996C4 /* NSError+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Extended.h"; sourceTree = "<group>"; };
+		08F535EB1C7E7E58005996C4 /* NSError+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Extended.m"; sourceTree = "<group>"; };
 		2559D8B6BB994B8E0EBD64DA /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E2AD567F054B05B39DA4885 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		E3FA8301E5425D75D424F692 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -181,6 +184,7 @@
 		08F535CD1C7D1AC3005996C4 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				08F535E91C7E7E3D005996C4 /* Categories */,
 				08F535DE1C7D281F005996C4 /* AppearanceUtility.h */,
 				08F535DF1C7D281F005996C4 /* AppearanceUtility.m */,
 				08F535E11C7D638A005996C4 /* LocationManager.h */,
@@ -201,6 +205,15 @@
 				08F535CF1C7D1C2C005996C4 /* Model.xcdatamodeld */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		08F535E91C7E7E3D005996C4 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				08F535EA1C7E7E58005996C4 /* NSError+Extended.h */,
+				08F535EB1C7E7E58005996C4 /* NSError+Extended.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		D511423C724BB87FA5A1F295 /* Frameworks */ = {
@@ -293,6 +306,9 @@
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 0;
 							};
 						};
 					};
@@ -411,6 +427,7 @@
 				08F535E31C7D638A005996C4 /* LocationManager.m in Sources */,
 				08F535D71C7D1F16005996C4 /* CFAEventsIncidentDetailViewController.m in Sources */,
 				08F535D41C7D1EE3005996C4 /* CFAEventsIncidentTableViewController.m in Sources */,
+				08F535EC1C7E7E58005996C4 /* NSError+Extended.m in Sources */,
 				08F535DC1C7D2386005996C4 /* Incident+CoreDataProperties.m in Sources */,
 				08F535A01C7D191A005996C4 /* main.m in Sources */,
 				08F535E61C7D6398005996C4 /* NetworkManager.m in Sources */,

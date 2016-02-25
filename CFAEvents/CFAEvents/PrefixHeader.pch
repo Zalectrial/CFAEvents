@@ -13,5 +13,9 @@
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 #import <MagicalRecord/MagicalRecord.h>
 #import "AppearanceUtility.h"
+#import <CoreLocation/CoreLocation.h>
+#import <UIKit/UIKit.h>
+#import "LocationManager.h"
+#import "NSError+Extended.h"
 
 #endif /* PrefixHeader_pch */
