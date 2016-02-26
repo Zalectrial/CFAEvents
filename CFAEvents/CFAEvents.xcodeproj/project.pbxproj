@@ -22,6 +22,7 @@
 		08F535E31C7D638A005996C4 /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535E21C7D638A005996C4 /* LocationManager.m */; };
 		08F535E61C7D6398005996C4 /* NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535E51C7D6398005996C4 /* NetworkManager.m */; };
 		08F535EC1C7E7E58005996C4 /* NSError+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535EB1C7E7E58005996C4 /* NSError+Extended.m */; };
+		08F535EF1C7EA019005996C4 /* CoreDataUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F535EE1C7EA019005996C4 /* CoreDataUtility.m */; };
 		4E67D4A87117D5EC6672BFAF /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2559D8B6BB994B8E0EBD64DA /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +75,8 @@
 		08F535E51C7D6398005996C4 /* NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkManager.m; sourceTree = "<group>"; };
 		08F535EA1C7E7E58005996C4 /* NSError+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Extended.h"; sourceTree = "<group>"; };
 		08F535EB1C7E7E58005996C4 /* NSError+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Extended.m"; sourceTree = "<group>"; };
+		08F535ED1C7EA019005996C4 /* CoreDataUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataUtility.h; sourceTree = "<group>"; };
+		08F535EE1C7EA019005996C4 /* CoreDataUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataUtility.m; sourceTree = "<group>"; };
 		2559D8B6BB994B8E0EBD64DA /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E2AD567F054B05B39DA4885 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		E3FA8301E5425D75D424F692 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 				08F535E21C7D638A005996C4 /* LocationManager.m */,
 				08F535E41C7D6398005996C4 /* NetworkManager.h */,
 				08F535E51C7D6398005996C4 /* NetworkManager.m */,
+				08F535ED1C7EA019005996C4 /* CoreDataUtility.h */,
+				08F535EE1C7EA019005996C4 /* CoreDataUtility.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -432,6 +437,7 @@
 				08F535A01C7D191A005996C4 /* main.m in Sources */,
 				08F535E61C7D6398005996C4 /* NetworkManager.m in Sources */,
 				08F535D11C7D1C2C005996C4 /* Model.xcdatamodeld in Sources */,
+				08F535EF1C7EA019005996C4 /* CoreDataUtility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

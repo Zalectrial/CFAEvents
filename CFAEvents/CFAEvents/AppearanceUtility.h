@@ -43,3 +43,9 @@
 + (UIFont *)cellFont;
 
 @end
+
+@interface UIImage (AppearanceUtility)
+
+- (UIImage *)colorImage:(UIColor *)color;
+
+@end

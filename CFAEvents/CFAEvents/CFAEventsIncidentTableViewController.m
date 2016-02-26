@@ -9,12 +9,15 @@
 #import "CFAEventsIncidentTableViewController.h"
 #import "NSLayoutConstraint+Extensions.h"
 #import "CFAEventsIncidentDetailViewController.h"
+#import "CoreDataUtility.h"
+#import "Incident.h"
 
 static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
-@interface CFAEventsIncidentTableViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface CFAEventsIncidentTableViewController () <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) UITableView *incidentTableView;
+@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
 @end
 
@@ -26,10 +29,25 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 {
     [super viewDidLoad];
     
+    self.fetchedResultsController = [Incident MR_fetchAllSortedBy:@"status,originDate"
+                                                     ascending:YES
+                                                 withPredicate:nil
+                                                       groupBy:nil
+                                                      delegate:self];
+    
+    NSError *error;
+    if (![[self fetchedResultsController] performFetch:&error])
+    {
+        // Update to handle the error appropriately.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+    }
+    
     self.title = @"CFA Events";
     
     [self setupScreen];
     [self setupNavigationBar];
+    [self fetchCFAEvents];
+    
 }
 
 - (void)setupScreen
@@ -64,11 +82,34 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
     self.navigationItem.rightBarButtonItem = refreshIncidentsButton;
 }
 
+- (void)fetchCFAEvents
+{
+    [[NetworkManager sharedManager] getCFAEventsWithCompletionHandler:^(NSDictionary *incidents, NSError *error)
+    {
+        if (error)
+        {
+            [self createAlertControllerWithError:error];
+        }
+        else
+        {
+            [CoreDataUtility createIncidentsFromDictionary:incidents withCompletionHandler:^(NSString *todo, NSError *error)
+            {
+                if (error)
+                {
+                    [self createAlertControllerWithError:error];
+                }
+                else
+                    NSLog(@"fine");
+            }];
+        }
+    }];
+}
+
 # pragma mark - Actions
 
 - (void)refreshIncidentList
 {
-    
+    [self fetchCFAEvents];
 }
 
 # pragma mark - Error Handling
@@ -90,9 +131,15 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
 # pragma mark - Table View
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return [[_fetchedResultsController sections] count];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 20;
+    id sectionInfo = [[_fetchedResultsController sections] objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -110,23 +157,119 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
+    Incident *incident = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
-    cell.textLabel.text = @"Title";
+    cell.textLabel.text = incident.type;
     cell.textLabel.font = [UIFont cellFont];
     
-    cell.imageView.image = [UIImage imageNamed:@"flame_small"];
+    UIImage *flameIcon = [[UIImage imageNamed:@"flame_small"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    cell.imageView.image = flameIcon;
+    cell.imageView.tintColor = [UIColor safeColor];
     
-    cell.detailTextLabel.text = @"Subtitle";
+    [[LocationManager sharedManager] getDistanceFromIncidentLocation:CLLocationCoordinate2DMake([incident.latitude doubleValue], [incident.longitude doubleValue]) toCurrentLocationWithCompletionHandler:^(CGFloat distance, NSError *error)
+    {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%f km", distance];
+    }];
     cell.detailTextLabel.font = [UIFont cellFont];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CFAEventsIncidentDetailViewController *cfaEventsDetailViewController = [[CFAEventsIncidentDetailViewController alloc] init];
+    CFAEventsIncidentDetailViewController *cfaEventsDetailViewController = [[CFAEventsIncidentDetailViewController alloc] initWithIncident:[self.fetchedResultsController objectAtIndexPath:indexPath]];
     [self.navigationController showDetailViewController:cfaEventsDetailViewController sender:self];
 }
 
 # pragma mark - NSFetchedResultsControllerDelegate
+
+/**
+ *  Begins updating the table view
+ *
+ *  @param controllerr The fetched results controller
+ */
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.incidentTableView beginUpdates];
+}
+
+/**
+ *  Inserts or removes sections that were changed
+ *
+ *  @param controller   The fetched results controller
+ *  @param sectionInfo  The section info
+ *  @param sectionIndex The section index
+ *  @param type         The change type
+ */
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    
+    switch(type)
+    {
+        case NSFetchedResultsChangeInsert:
+            [self.incidentTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                                    withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.incidentTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                                    withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+/**
+ *  Inserts, updates or deletes phones that were changed
+ *
+ *  @param controller   The fetched results controller
+ *  @param anObject     The phone that changed
+ *  @param indexPath    The row
+ *  @param type         The change type
+ *  @param newIndexPath The new index path
+ */
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    
+    UITableView *tableView = self.incidentTableView;
+    
+    switch(type)
+    {
+            
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath]
+                    atIndexPath:indexPath];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+/**
+ *  Finishes updating the table view
+ *
+ *  @param controller The fetched results controller
+ */
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.incidentTableView endUpdates];
+}
 
 @end

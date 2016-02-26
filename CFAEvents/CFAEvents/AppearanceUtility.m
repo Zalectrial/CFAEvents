@@ -56,3 +56,18 @@
 + (UIFont *)cellFont            {   return [UIFont boldSystemFontOfSize:15];           }
 
 @end
+
+@implementation UIImage (AppearanceUtility)
+
+- (UIImage *)colorImage:(UIColor *)color
+{
+    UIImage *coloredImage = [self imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, coloredImage.scale);
+    [color setFill];
+    [coloredImage drawInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
+    coloredImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return coloredImage;
+}
+
+@end

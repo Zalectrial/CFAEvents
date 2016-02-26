@@ -12,7 +12,17 @@
 
 - (void)fillPropertiesFromDictionary:(NSDictionary *)dictionary
 {
-    
+    self.status = [dictionary[@"incidentStatus"] capitalizedString];
+    self.size = [dictionary[@"incidentSize"] capitalizedString];
+    self.location = [dictionary[@"incidentLocation"] capitalizedString];
+    self.owner = dictionary[@"territory"];
+    self.resourceCount = @([dictionary[@"resourceCount"] doubleValue]);
+    self.latitude = @([dictionary[@"latitude"] doubleValue]);
+    self.longitude = @([dictionary[@"longitude"] doubleValue]);
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"d/MM/yy h:m:s a"];
+    self.originDate = [formatter dateFromString:dictionary[@"incidentOriginDate"]];
+    self.type = [dictionary[@"incidentType"] capitalizedString];
 }
 
 - (CLLocationCoordinate2D)coordinate
@@ -23,6 +33,11 @@
 - (NSString *)title
 {
     return self.type;
+}
+
+- (NSString *)subtitle
+{
+    return self.status;
 }
 
 @end

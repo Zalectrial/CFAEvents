@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Incident : NSManagedObject <MKAnnotation>
 
-// Insert code here to declare functionality of your managed object subclass
+- (void)fillPropertiesFromDictionary:(NSDictionary *)dictionary;
 
 @end
 

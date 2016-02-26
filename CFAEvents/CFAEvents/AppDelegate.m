@@ -24,9 +24,10 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
+    [MagicalRecord setupCoreDataStack];
+    
     [self setupRootViewController];
     
-    [MagicalRecord setupCoreDataStack];
     [LocationManager sharedManager];
     
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
@@ -91,6 +92,8 @@
                                             tableViewNavigationController,
                                             detailViewNavigationController,
                                             ];
+    
+    splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModePrimaryOverlay;
     
     self.window.rootViewController = splitViewController;
 }

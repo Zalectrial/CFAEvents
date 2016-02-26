@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Incident.h"
 
 @interface CFAEventsIncidentDetailViewController : UIViewController
+
+- (instancetype)initWithIncident:(Incident *)selectedIncident;
 
 @end

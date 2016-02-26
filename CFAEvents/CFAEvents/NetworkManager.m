@@ -49,13 +49,19 @@ static NSString *const CFAEventsURL = @"http://osom.cfa.vic.gov.au/public/osom/I
     {
         if (error)
         {
-            completionHandler(nil, error);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler(nil, [NSError createErrorWithMessage:@"Could not download incident data"]);
+            });
+            
         }
         else
         {
             NSString *path = [localFile path];
             NSDictionary *dictionary = [NSDictionary dictionaryWithXMLFile:path];
-            completionHandler(dictionary, nil);
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler(dictionary, nil);
+            });
         }
     }];
     

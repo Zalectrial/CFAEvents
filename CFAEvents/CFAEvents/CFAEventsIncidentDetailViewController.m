@@ -11,16 +11,30 @@
 #import "NSLayoutConstraint+Extensions.h"
 #import <MapKit/MapKit.h>
 
-@interface CFAEventsIncidentDetailViewController ()
+static NSString *const ReuseIdentifier = @"ReuseIdentifier";
+
+@interface CFAEventsIncidentDetailViewController () <MKMapViewDelegate>
 
 @property (nonatomic, strong) UIScrollView *detailScrollView;
 @property (nonatomic, strong) MKMapView *mapView;
 
 @property (nonatomic, strong) UISegmentedControl *detailSegmentedControl;
 
+@property (nonatomic, strong) Incident *incident;
+
 @end
 
 @implementation CFAEventsIncidentDetailViewController
+
+- (instancetype)initWithIncident:(Incident *)selectedIncident
+{
+    self = [super init];
+    if (self)
+    {
+        self.incident = selectedIncident;
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -47,11 +61,12 @@
     //Status Icon Image
     UIImage *statusImage = [[UIImage imageNamed:@"flame_large"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *statusImageView = [[UIImageView alloc] initWithImage:statusImage];
+    statusImageView.tintColor = [UIColor safeColor];
     [self.detailScrollView addSubview:statusImageView];
     
     //Type Title Label
     UILabel *typeTitleLabel = [[UILabel alloc] init];
-    typeTitleLabel.text = @"Placeholder";
+    typeTitleLabel.text = self.incident.type;
     typeTitleLabel.font = [UIFont titleFont];
     [self.detailScrollView addSubview:typeTitleLabel];
     
@@ -61,7 +76,7 @@
     statusTitleLabel.font = [UIFont titleLabelFont];
     
     UILabel *statusTextLabel = [[UILabel alloc] init];
-    statusTextLabel.text = @"Placeholder";
+    statusTextLabel.text = self.incident.status;
     statusTextLabel.textColor = [UIColor textLabelColor];
     statusTextLabel.font = [UIFont textLabelFont];
     
@@ -71,7 +86,7 @@
     locationTitleLabel.font = [UIFont titleLabelFont];
     
     UILabel *locationTextLabel = [[UILabel alloc] init];
-    locationTextLabel.text = @"Placeholder";
+    locationTextLabel.text = self.incident.location;
     locationTextLabel.textColor = [UIColor textLabelColor];
     locationTextLabel.font = [UIFont textLabelFont];
     
@@ -81,7 +96,7 @@
     sizeTitleLabel.font = [UIFont titleLabelFont];
     
     UILabel *sizeTextLabel = [[UILabel alloc] init];
-    sizeTextLabel.text = @"Placeholder";
+    sizeTextLabel.text = self.incident.size;
     sizeTextLabel.textColor = [UIColor textLabelColor];
     sizeTextLabel.font = [UIFont textLabelFont];
     
@@ -91,7 +106,10 @@
     startTimeTitleLabel.font = [UIFont titleLabelFont];
     
     UILabel *startTimeTextLabel = [[UILabel alloc] init];
-    startTimeTextLabel.text = @"Placeholder";
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterShortStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    startTimeTextLabel.text = [formatter stringFromDate:self.incident.originDate];
     startTimeTextLabel.textColor = [UIColor textLabelColor];
     startTimeTextLabel.font = [UIFont textLabelFont];
     
@@ -101,7 +119,7 @@
     ownerTitleLabel.font = [UIFont titleLabelFont];
     
     UILabel *ownerTextLabel = [[UILabel alloc] init];
-    ownerTextLabel.text = @"Placeholder";
+    ownerTextLabel.text = self.incident.owner;
     ownerTextLabel.textColor = [UIColor textLabelColor];
     ownerTextLabel.font = [UIFont textLabelFont];
     
@@ -111,7 +129,7 @@
     resourceCountTitleLabel.font = [UIFont titleLabelFont];
     
     UILabel *resourceCountTextLabel = [[UILabel alloc] init];
-    resourceCountTextLabel.text = @"Placeholder";
+    resourceCountTextLabel.text = [self.incident.resourceCount stringValue];
     resourceCountTextLabel.textColor = [UIColor textLabelColor];
     resourceCountTextLabel.font = [UIFont textLabelFont];
     
@@ -121,7 +139,7 @@
     latitudeTitleLabel.font = [UIFont titleLabelFont];
     
     UILabel *latitudeTextLabel = [[UILabel alloc] init];
-    latitudeTextLabel.text = @"Placeholder";
+    latitudeTextLabel.text = [self.incident.latitude stringValue];
     latitudeTextLabel.textColor = [UIColor textLabelColor];
     latitudeTextLabel.font = [UIFont textLabelFont];
     
@@ -131,7 +149,7 @@
     longitudeTitleLabel.font = [UIFont titleLabelFont];
     
     UILabel *longitudeTextLabel = [[UILabel alloc] init];
-    longitudeTextLabel.text = @"Placeholder";
+    longitudeTextLabel.text = [self.incident.longitude stringValue];
     longitudeTextLabel.textColor = [UIColor textLabelColor];
     longitudeTextLabel.font = [UIFont textLabelFont];
     
@@ -221,6 +239,7 @@
 - (void)setupMapView
 {
     self.mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
+    self.mapView.delegate = self;
     [self.view addSubview:self.mapView];
 }
 
@@ -238,6 +257,7 @@
         [UIView animateWithDuration:0.1 animations:^{
             self.mapView.alpha = 0;
             self.detailScrollView.alpha = 1;
+            [self.mapView removeAnnotation:self.incident];
         }];
     }
     else
@@ -245,8 +265,29 @@
         [UIView animateWithDuration:0.1 animations:^{
             self.mapView.alpha = 1;
             self.detailScrollView.alpha = 0;
+            [self.mapView showAnnotations:@[self.incident] animated:YES];
         }];
     }
+}
+
+# pragma mark - Map View
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    MKAnnotationView *annotationView = (MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:ReuseIdentifier];
+    
+    if (!annotationView)
+    {
+        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:ReuseIdentifier];
+    }
+    
+    annotationView.canShowCallout = YES;
+    
+    UIImage *flameIcon = [[UIImage imageNamed:@"flame_small"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    annotationView.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:[flameIcon colorImage:[UIColor safeColor]]];
+    annotationView.image = [flameIcon colorImage:[UIColor safeColor]];
+    
+    return annotationView;
 }
 
 @end
