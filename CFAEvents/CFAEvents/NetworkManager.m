@@ -43,7 +43,7 @@ static NSString *const CFAEventsURL = @"http://osom.cfa.vic.gov.au/public/osom/I
     return _sharedManager;
 }
 
-- (void)getCFAEventsWithCompletionHandler:(void (^)(NSDictionary *incidents, NSError *))completionHandler
+- (void)getCFAEventsWithCompletionHandler:(void (^)(NSDictionary *incidents, NSError *error))completionHandler
 {
     self.task = [self.session downloadTaskWithURL:self.url completionHandler:^(NSURL * _Nullable localFile, NSURLResponse * _Nullable response, NSError * _Nullable error)
     {

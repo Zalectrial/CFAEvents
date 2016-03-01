@@ -8,8 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ *  An error extension for the purpose of creating custom error messages
+ */
 @interface NSError (Extended)
 
+/**
+ *  Create a custom error with the message that is passed in
+ *
+ *  @param message The message to display to the user
+ *
+ *  @return The custom error
+ */
 + (NSError *)createErrorWithMessage:(NSString *)message;
 
 @end

@@ -39,6 +39,7 @@
 + (UIColor *)controlledColor    {   return [UIColor colorFromHexString:@"#33B5E5"];    }
 + (UIColor *)containedColor     {   return [UIColor colorFromHexString:@"#AA66CC"];    }
 + (UIColor *)safeColor          {   return [UIColor colorFromHexString:@"#99CC00"];    }
++ (UIColor *)defaultColor       {   return [UIColor grayColor];                        }
 
 //Detail View Controller Colors
 + (UIColor *)textLabelColor     {   return [UIColor grayColor];                        }

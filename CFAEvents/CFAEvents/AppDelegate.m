@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 #import "CFAEventsIncidentTableViewController.h"
 #import "CFAEventsIncidentDetailViewController.h"
+#import "CoreDataUtility.h"
+#import "LocationManager.h"
+#import "NetworkManager.h"
 
 @interface AppDelegate ()
 
@@ -48,7 +51,24 @@
             completionHandler(UIBackgroundFetchResultNoData);
         }
         else
+        {
+            [CoreDataUtility createIncidentsFromDictionary:incidents withCompletionHandler:^(BOOL success, NSError *error)
+            {
+                if (success)
+                {
+                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                    
+                    NSDate *date = [NSDate date];
+                    [defaults removeObjectForKey:@"Background Fetch"];
+                    [defaults setObject:date forKey:@"Background Fetch"];
+                    
+                    [defaults synchronize];
+                }
+            }];
+            
             completionHandler(UIBackgroundFetchResultNewData);
+        }
+        
     }];
 }
 
@@ -89,8 +109,10 @@
     
     UISplitViewController *splitViewController = [[UISplitViewController alloc] init];
     splitViewController.viewControllers = @[
+                                            
                                             tableViewNavigationController,
                                             detailViewNavigationController,
+                                            
                                             ];
     
     splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModePrimaryOverlay;

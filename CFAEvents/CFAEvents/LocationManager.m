@@ -51,19 +51,13 @@
     return self.locationManager.location;
 }
 
-- (void)getDistanceFromIncidentLocation:(CLLocationCoordinate2D)incidentLocation toCurrentLocationWithCompletionHandler:(void (^)(CGFloat distance, NSError *error))completionHandler
+- (CGFloat)getDistanceFromCurrentLocationToIncidentLocation:(CLLocationCoordinate2D)incidentLocation
 {
     CLLocation *incident = [[CLLocation alloc] initWithLatitude:incidentLocation.latitude longitude:incidentLocation.longitude];
     CGFloat distanceBetweenLocations = [self.locationManager.location distanceFromLocation:incident];
     distanceBetweenLocations = distanceBetweenLocations / 1000;
-    if (distanceBetweenLocations)
-    {
-        completionHandler(distanceBetweenLocations, nil);
-    }
-    else if (!self.locationManager.location)
-    {
-        completionHandler(0, [NSError createErrorWithMessage:@"Could not get your location"]);
-    }
+
+    return distanceBetweenLocations;
 }
 
 @end

@@ -10,12 +10,22 @@
 
 @interface AppearanceUtility : NSObject
 
+/**
+ *  Setup code for the navigation bars for the whole application
+ */
 + (void)setupNavigationBar;
 
 @end
 
 @interface UIColor (AppearanceUtility)
 
+/**
+ *  Creates a rgb color from a hex code
+ *
+ *  @param hexString The hex code
+ *
+ *  @return The color
+ */
 + (UIColor *)colorFromHexString:(NSString *)hexString;
 
 //Application Background Color
@@ -26,6 +36,7 @@
 + (UIColor *)controlledColor;
 + (UIColor *)containedColor;
 + (UIColor *)safeColor;
++ (UIColor *)defaultColor;
 
 //Detail View Controller Colors
 + (UIColor *)textLabelColor;
@@ -46,6 +57,13 @@
 
 @interface UIImage (AppearanceUtility)
 
+/**
+ *  Colors an image with the specified color
+ *
+ *  @param color The color for the image
+ *
+ *  @return The colored image
+ */
 - (UIImage *)colorImage:(UIColor *)color;
 
 @end

@@ -11,7 +11,7 @@
 
 @implementation CoreDataUtility
 
-+ (void)createIncidentsFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(NSString *, NSError *error))completionHandler
++ (void)createIncidentsFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext)
     {
@@ -22,17 +22,20 @@
             Incident *incident = [Incident MR_createEntityInContext:localContext];
             [incident fillPropertiesFromDictionary:event];
         }
-
     }
     completion:^(BOOL contextDidSave, NSError * _Nullable error)
     {
         if (error)
         {
-            completionHandler(nil, [NSError createErrorWithMessage:@"Could not save incidents"]);
+            completionHandler(NO, [NSError createErrorWithMessage:@"Could not save incidents"]);
         }
         else if (!contextDidSave)
         {
-            completionHandler(nil, [NSError createErrorWithMessage:@"Unexpected saving error"]);
+            completionHandler(NO, [NSError createErrorWithMessage:@"Unexpected saving error"]);
+        }
+        else
+        {
+            completionHandler(YES, nil);
         }
     }];
 }

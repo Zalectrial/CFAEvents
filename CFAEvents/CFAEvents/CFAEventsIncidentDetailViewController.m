@@ -7,6 +7,7 @@
 //
 
 #import "CFAEventsIncidentDetailViewController.h"
+#import "AppearanceUtility.h"
 #import "OAStackView.h"
 #import "NSLayoutConstraint+Extensions.h"
 #import <MapKit/MapKit.h>
@@ -21,7 +22,7 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 @property (nonatomic, strong) UISegmentedControl *detailSegmentedControl;
 
 @property (nonatomic, strong) Incident *incident;
-
+@property (nonatomic) IncidentStatus status;
 @end
 
 @implementation CFAEventsIncidentDetailViewController
@@ -52,16 +53,42 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 {
     self.view.backgroundColor = [UIColor backgroundColor];
     
-    self.mapView.alpha = 0;
-    
+    if (!self.incident)
+    {
+        self.incident = [Incident MR_findFirst];
+    }
+
     //Scroll View
     self.detailScrollView = [[UIScrollView alloc] init];
+    self.detailScrollView.contentSize = CGSizeMake(1000, 1000);
+    self.detailScrollView.scrollEnabled = YES;
+    self.detailScrollView.userInteractionEnabled = YES;
     [self.view addSubview:self.detailScrollView];
     
     //Status Icon Image
     UIImage *statusImage = [[UIImage imageNamed:@"flame_large"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *statusImageView = [[UIImageView alloc] initWithImage:statusImage];
-    statusImageView.tintColor = [UIColor safeColor];
+    
+    self.status = [self.incident incidentStatusFromString:self.incident.status];
+    switch (self.status)
+    {
+        case IncidentStatusSafe:
+            statusImageView.tintColor = [UIColor safeColor];
+            break;
+        case IncidentStatusControlled:
+            statusImageView.tintColor = [UIColor controlledColor];
+            break;
+        case IncidentStatusContained:
+            statusImageView.tintColor = [UIColor containedColor];
+            break;
+        case IncidentStatusGoing:
+            statusImageView.tintColor = [UIColor goingColor];
+            break;
+        default:
+            statusImageView.tintColor = [UIColor defaultColor];
+            break;
+    }
+    
     [self.detailScrollView addSubview:statusImageView];
     
     //Type Title Label
@@ -198,26 +225,32 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
     //Constraints
     [NSLayoutConstraint activateConstraints:@[
                                               
+                                              //Scroll View
                                               NSLayoutConstraintMakeInset(self.detailScrollView, ALTop, 60),
                                               NSLayoutConstraintMakeEqual(self.detailScrollView, ALBottom, self.view),
                                               NSLayoutConstraintMakeEqual(self.detailScrollView, ALLeft, self.view),
                                               NSLayoutConstraintMakeEqual(self.detailScrollView, ALRight, self.view),
                                               
+                                              //Status Image View
                                               NSLayoutConstraintMakeAll(statusImageView, ALLeft, ALEqual, self.detailScrollView, ALLeft, 1.0, 30, UILayoutPriorityRequired),
                                               NSLayoutConstraintMakeAll(statusImageView, ALTop, ALEqual, self.detailScrollView, ALTop, 1.0, 10, UILayoutPriorityRequired),
                                               NSLayoutConstraintMakeAll(statusImageView, ALHeight, ALEqual, nil, ALHeight, 1.0, 50, UILayoutPriorityRequired),
                                               NSLayoutConstraintMakeAll(statusImageView, ALWidth, ALEqual, nil, ALWidth, 1.0, 50, UILayoutPriorityRequired),
                                               
+                                              //Type Title Label
                                               NSLayoutConstraintMakeEqual(typeTitleLabel, ALCenterY, statusImageView),
                                               NSLayoutConstraintMakeHSpace(statusImageView, typeTitleLabel, 5),
                                               
+                                              //Title Labels Stack View
                                               NSLayoutConstraintMakeEqual(titleLabelsStackView, ALLeft, self.detailScrollView),
                                               NSLayoutConstraintMakeAll(titleLabelsStackView, ALRight, ALEqual, self.detailScrollView, ALCenterX, 1.0, -5, UILayoutPriorityRequired),
+                                              NSLayoutConstraintMakeEqual(titleLabelsStackView, ALBottom, self.detailScrollView),
                                               NSLayoutConstraintMakeVSpace(statusImageView, titleLabelsStackView, 20),
                                               
+                                              //Text Labels Stack View
                                               NSLayoutConstraintMakeEqual(textLabelsStackView, ALRight, self.detailScrollView),
                                               NSLayoutConstraintMakeEqual(textLabelsStackView, ALTop, titleLabelsStackView),
-                                              
+                                              NSLayoutConstraintMakeEqual(textLabelsStackView, ALBottom, titleLabelsStackView),
                                               NSLayoutConstraintMakeHSpace(titleLabelsStackView, textLabelsStackView, 10),
                                               
                                               ]];
@@ -234,15 +267,33 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
                                     action:@selector(segmentedControlChange)
                           forControlEvents:UIControlEventValueChanged];
     self.navigationItem.titleView = self.detailSegmentedControl;
+    
+    self.navigationItem.leftItemsSupplementBackButton = YES;
 }
 
 - (void)setupMapView
 {
-    self.mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
+    self.mapView = [[MKMapView alloc] init];
     self.mapView.delegate = self;
     [self.view addSubview:self.mapView];
+    self.mapView.alpha = 0;
+    
+    //Constraints
+    [NSLayoutConstraint activateConstraints:@[
+                                              
+                                              //Map View Constraints
+                                              NSLayoutConstraintMakeEqual(self.mapView, ALTop, self.view),
+                                              NSLayoutConstraintMakeEqual(self.mapView, ALBottom, self.view),
+                                              NSLayoutConstraintMakeEqual(self.mapView, ALRight, self.view),
+                                              NSLayoutConstraintMakeEqual(self.mapView, ALLeft, self.view),
+                                              
+                                              ]];
 }
 
+/**
+ *  Initialises the segemented control.
+ *  On load the view defaults to the details screen.
+ */
 - (void)initialiseSegmentedControl
 {
     [self.detailSegmentedControl setEnabled:YES forSegmentAtIndex:0];
@@ -250,6 +301,10 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
 # pragma mark - Actions
 
+/**
+ *  Handles when the user changes the value of the segmented control
+ *  The alpha of the two views are animated based on what the user has selected
+ */
 - (void)segmentedControlChange
 {
     if (self.detailSegmentedControl.selectedSegmentIndex == 0)
@@ -257,7 +312,11 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
         [UIView animateWithDuration:0.1 animations:^{
             self.mapView.alpha = 0;
             self.detailScrollView.alpha = 1;
-            [self.mapView removeAnnotation:self.incident];
+            
+            if (self.incident)
+            {
+                [self.mapView removeAnnotation:self.incident];
+            }
         }];
     }
     else
@@ -265,7 +324,11 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
         [UIView animateWithDuration:0.1 animations:^{
             self.mapView.alpha = 1;
             self.detailScrollView.alpha = 0;
-            [self.mapView showAnnotations:@[self.incident] animated:YES];
+            
+            if (self.incident)
+            {
+                [self.mapView showAnnotations:@[self.incident] animated:NO];
+            }
         }];
     }
 }
@@ -278,14 +341,38 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
     
     if (!annotationView)
     {
-        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:ReuseIdentifier];
+        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation
+                                                      reuseIdentifier:ReuseIdentifier];
     }
     
     annotationView.canShowCallout = YES;
     
     UIImage *flameIcon = [[UIImage imageNamed:@"flame_small"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    annotationView.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:[flameIcon colorImage:[UIColor safeColor]]];
-    annotationView.image = [flameIcon colorImage:[UIColor safeColor]];
+    annotationView.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:flameIcon];
+    
+    switch (self.status)
+    {
+        case IncidentStatusSafe:
+            annotationView.leftCalloutAccessoryView.tintColor = [UIColor safeColor];
+            annotationView.image = [flameIcon colorImage:[UIColor safeColor]];
+            break;
+        case IncidentStatusControlled:
+            annotationView.leftCalloutAccessoryView.tintColor = [UIColor controlledColor];
+            annotationView.image = [flameIcon colorImage:[UIColor controlledColor]];
+            break;
+        case IncidentStatusContained:
+            annotationView.leftCalloutAccessoryView.tintColor = [UIColor containedColor];
+            annotationView.image = [flameIcon colorImage:[UIColor containedColor]];
+            break;
+        case IncidentStatusGoing:
+            annotationView.leftCalloutAccessoryView.tintColor = [UIColor goingColor];
+            annotationView.image = [flameIcon colorImage:[UIColor goingColor]];
+            break;
+        default:
+            annotationView.leftCalloutAccessoryView.tintColor = [UIColor defaultColor];
+            annotationView.image = [flameIcon colorImage:[UIColor defaultColor]];
+            break;
+    }
     
     return annotationView;
 }

@@ -9,14 +9,18 @@
 #import "CFAEventsIncidentTableViewController.h"
 #import "NSLayoutConstraint+Extensions.h"
 #import "CFAEventsIncidentDetailViewController.h"
+#import "AppearanceUtility.h"
 #import "CoreDataUtility.h"
 #import "Incident.h"
+#import "LocationManager.h"
+#import "NetworkManager.h"
 
 static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
 @interface CFAEventsIncidentTableViewController () <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) UITableView *incidentTableView;
+@property (nonatomic, strong) UIRefreshControl *refreshCFAIncidentsControl;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
 @end
@@ -44,21 +48,28 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
     
     self.title = @"CFA Events";
     
-    [self setupScreen];
     [self setupNavigationBar];
+    [self setupScreen];
     [self fetchCFAEvents];
-    
 }
 
 - (void)setupScreen
 {
     self.view.backgroundColor = [UIColor backgroundColor];
     
-    //Incident table view
+    //Incident Table view
     self.incidentTableView = [[UITableView alloc] init];
+    self.incidentTableView.backgroundColor = [UIColor backgroundColor];
     self.incidentTableView.delegate = self;
     self.incidentTableView.dataSource = self;
     [self.view addSubview:self.incidentTableView];
+    
+    //Refresh Control
+    self.refreshCFAIncidentsControl = [[UIRefreshControl alloc] init];
+    [self.refreshCFAIncidentsControl addTarget:self
+                                   action:@selector(refreshIncidentList)
+                         forControlEvents:UIControlEventValueChanged];
+    [self.incidentTableView addSubview:self.refreshCFAIncidentsControl];
     
     //Constraints
     [NSLayoutConstraint activateConstraints:@[
@@ -74,14 +85,13 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 - (void)setupNavigationBar
 {
     [AppearanceUtility setupNavigationBar];
-    
-    UIBarButtonItem *refreshIncidentsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                                            target:self
-                                                                                            action:@selector(refreshIncidentList)];
-    
-    self.navigationItem.rightBarButtonItem = refreshIncidentsButton;
 }
 
+/**
+ *  Calls the shared network manager to download the latest CFA incidents and receives a dictionary of incidents.
+ *  If these incidents are successfully retrieved they are passed onto a core data utility class to populate core data.
+ *  Alert controllers are presented if either of these fail.
+ */
 - (void)fetchCFAEvents
 {
     [[NetworkManager sharedManager] getCFAEventsWithCompletionHandler:^(NSDictionary *incidents, NSError *error)
@@ -92,14 +102,12 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
         }
         else
         {
-            [CoreDataUtility createIncidentsFromDictionary:incidents withCompletionHandler:^(NSString *todo, NSError *error)
+            [CoreDataUtility createIncidentsFromDictionary:incidents withCompletionHandler:^(BOOL success, NSError *error)
             {
                 if (error)
                 {
                     [self createAlertControllerWithError:error];
                 }
-                else
-                    NSLog(@"fine");
             }];
         }
     }];
@@ -107,13 +115,22 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 
 # pragma mark - Actions
 
+/**
+ *  Refreshes the CFA incidents. Simply calls fetchCFAEvents
+ */
 - (void)refreshIncidentList
 {
     [self fetchCFAEvents];
+    [self.refreshCFAIncidentsControl endRefreshing];
 }
 
 # pragma mark - Error Handling
 
+/**
+ *  Presents an alert controller for any errors passed in with a completion handler
+ *
+ *  @param error The error that was passed in
+ */
 - (void)createAlertControllerWithError:(NSError *)error
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:error.domain
@@ -145,6 +162,7 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReuseIdentifier];
+    
     if(!cell)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ReuseIdentifier];
@@ -161,24 +179,90 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
+    cell.backgroundColor = [UIColor backgroundColor];
+    
     cell.textLabel.text = incident.type;
     cell.textLabel.font = [UIFont cellFont];
     
     UIImage *flameIcon = [[UIImage imageNamed:@"flame_small"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     cell.imageView.image = flameIcon;
-    cell.imageView.tintColor = [UIColor safeColor];
     
-    [[LocationManager sharedManager] getDistanceFromIncidentLocation:CLLocationCoordinate2DMake([incident.latitude doubleValue], [incident.longitude doubleValue]) toCurrentLocationWithCompletionHandler:^(CGFloat distance, NSError *error)
+    cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
+
+    IncidentStatus status = [incident incidentStatusFromString:incident.status];
+    switch(status)
     {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%f km", distance];
-    }];
+        case IncidentStatusGoing:
+            cell.imageView.tintColor = [UIColor goingColor];
+            cell.selectedBackgroundView.backgroundColor = [[UIColor goingColor] colorWithAlphaComponent:0.25];
+            break;
+        case IncidentStatusContained:
+            cell.imageView.tintColor = [UIColor containedColor];
+            cell.selectedBackgroundView.backgroundColor = [[UIColor containedColor] colorWithAlphaComponent:0.25];
+            break;
+        case IncidentStatusControlled:
+            cell.imageView.tintColor = [UIColor controlledColor];
+            cell.selectedBackgroundView.backgroundColor = [[UIColor controlledColor] colorWithAlphaComponent:0.25];
+            break;
+        case IncidentStatusSafe:
+            cell.imageView.tintColor = [UIColor safeColor];
+            cell.selectedBackgroundView.backgroundColor = [[UIColor safeColor] colorWithAlphaComponent:0.25];
+            break;
+        default:
+            cell.imageView.tintColor = [UIColor defaultColor];
+            cell.selectedBackgroundView.backgroundColor = [[UIColor defaultColor] colorWithAlphaComponent:0.25];
+            break;
+    }
+    
+    CGFloat distance = [[LocationManager sharedManager] getDistanceFromCurrentLocationToIncidentLocation:CLLocationCoordinate2DMake([incident.latitude doubleValue], [incident.longitude doubleValue])];
+    if (distance)
+    {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%.fkm", distance];
+    }
+    else
+    {
+        cell.detailTextLabel.text = @"-km";
+    }
+    
     cell.detailTextLabel.font = [UIFont cellFont];
 }
 
+/**
+ *  Presents the detail view controller and initialises it with an incident when it is selected in the table view
+ *
+ *  @param tableView The table the selected row is in
+ *  @param indexPath The row that was selected
+ */
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CFAEventsIncidentDetailViewController *cfaEventsDetailViewController = [[CFAEventsIncidentDetailViewController alloc] initWithIncident:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-    [self.navigationController showDetailViewController:cfaEventsDetailViewController sender:self];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:cfaEventsDetailViewController];
+    [self.navigationController showDetailViewController:navController sender:self];
+}
+
+/**
+ *  I'm sure there's more rhyme and reason to using user defaults than this
+ *  Maybe you can show me the proper application sometime
+ *  I did forget to ask, do these only update in the simulator after exiting and running again?
+ *
+ */
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"Australia/Melbourne"]];
+    NSString *date = [formatter stringFromDate:[defaults objectForKey:@"Background Fetch"]];
+    
+    if (date)
+    {
+        return [NSString stringWithFormat:@"Last background sync: %@", date];
+    }
+    else
+    {
+        return [NSString stringWithFormat:@"Last background sync:"];
+    }
 }
 
 # pragma mark - NSFetchedResultsControllerDelegate
@@ -237,7 +321,6 @@ static NSString *const ReuseIdentifier = @"ReuseIdentifier";
     
     switch(type)
     {
-            
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                              withRowAnimation:UITableViewRowAnimationFade];

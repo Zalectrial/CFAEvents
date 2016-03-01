@@ -40,4 +40,29 @@
     return self.status;
 }
 
+- (IncidentStatus)incidentStatusFromString:(NSString *)incidentStatusString
+{
+    if ([incidentStatusString isEqualToString:@"Going"])
+    {
+        return IncidentStatusGoing;
+    }
+    else if ([incidentStatusString isEqualToString:@"Controlled"])
+    {
+        return IncidentStatusControlled;
+    }
+    else if ([incidentStatusString isEqualToString:@"Contained"])
+    {
+        return IncidentStatusContained;
+    }
+    else if ([incidentStatusString isEqualToString:@"Safe"])
+    {
+        return IncidentStatusSafe;
+    }
+    else
+    {
+        return IncidentStatusUnknown;
+    }
+    
+}
+
 @end

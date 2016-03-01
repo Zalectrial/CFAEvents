@@ -8,10 +8,30 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ *  A shared location manager for the purpose of handling location information
+ */
 @interface LocationManager : NSObject
 
+/**
+ *  Creates an instance of the shared manager
+ *
+ *  @return The shared manager
+ */
 + (instancetype)sharedManager;
+
+/**
+ *  Gets the current location from the location manager
+ *
+ *  @return The current location
+ */
 - (CLLocation *)getCurrentLocation;
-- (void)getDistanceFromIncidentLocation:(CLLocationCoordinate2D)incidentLocation toCurrentLocationWithCompletionHandler:(void (^)(CGFloat distance, NSError *error))completionHandler;
+
+/**
+ *  Gets the distanct in kilometers between the user's current location and the incident location
+ *
+ *  @param incidentLocation  The location of the incident
+ */
+- (CGFloat)getDistanceFromCurrentLocationToIncidentLocation:(CLLocationCoordinate2D)incidentLocation;
 
 @end
